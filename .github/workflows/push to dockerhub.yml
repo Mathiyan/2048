@@ -27,4 +27,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: mattzewdie/2048:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/2048:latest
