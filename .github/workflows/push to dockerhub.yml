@@ -1,0 +1,31 @@
+name: Build and Push to Docker Hub
+
+on:
+  push:
+    branches:
+      - main  # Trigger on pushes to the main branch
+  workflow_dispatch: # Allow manual triggering of the workflow
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/2048:latest
+
+    - name: Log out from Docker Hub
+      run: docker logout
